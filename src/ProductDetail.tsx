@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react'
-import { useParams } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
 
 function ProductDetail({ addToCart }) {
   const { id } = useParams()
+  const navigate = useNavigate()
   const [product, setProduct] = useState(null)
 
 useEffect(() => {
@@ -16,7 +17,9 @@ useEffect(() => {
 
   if (!product) return <p>Loading...</p>
 
-  return (
+ return (
+  <div>
+    <button className="back-btn" onClick={() => navigate(-1)}>⏎</button>
     <div className="detail-container">
       <img className="detail-image" src={product.thumbnail} alt={product.title} />
       <div className="detail-info">
@@ -24,11 +27,12 @@ useEffect(() => {
         <p className="detail-description">{product.description}</p>
         <p className="detail-price">${product.price}</p>
         <button className="detail-btn" onClick={() => addToCart(product)}>
-            Add to Cart
+          Add to Cart
         </button>
       </div>
     </div>
-  )
+  </div>
+)
 }
 
 export default ProductDetail

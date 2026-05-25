@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom'
 
-function Cart({ cart }) {
+function Cart({ cart, removeFromCart }) {
   const navigate = useNavigate()
   const total = cart.reduce((sum, item) => sum + item.price, 0)
 
@@ -13,12 +13,13 @@ function Cart({ cart }) {
         <>
           {cart.map((item, index) => (
             <div className="cart-item" key={index}>
-              <img src={item.thumbnail} alt={item.title} />
-              <div>
+                <img src={item.thumbnail} alt={item.title} />
+                <div>
                 <p className="cart-item-title">{item.title}</p>
                 <p className="cart-item-price">${item.price}</p>
-              </div>
             </div>
+            <button className="remove-btn" onClick={() => removeFromCart(index)}>✕</button>
+        </div>
           ))}
           <div className="cart-total">
             <p>Total: ${total.toFixed(2)}</p>

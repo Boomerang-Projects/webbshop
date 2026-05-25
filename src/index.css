@@ -305,4 +305,72 @@ body {
   border-color: rgba(255,255,255,0.35);
 }
 
+.hero {
+  text-align: center;
+  padding: 80px 24px 40px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.05) 0%, transparent 100%);
+}
 
+.hero-title {
+  font-size: 56px;
+  font-weight: 700;
+  letter-spacing: -2px;
+  margin-bottom: 16px;
+}
+
+.hero-subtitle {
+  font-size: 18px;
+  opacity: 0.5;
+  font-weight: 300;
+}
+
+.product-rating {
+  font-size: 13px;
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.stars {
+  color: #f5a623;
+  letter-spacing: 2px;
+}
+
+.rating-number {
+  opacity: 0.5;
+  font-size: 12px;
+}
+
+.remove-btn {
+  margin-left: auto;
+  background: none;
+  border: none;
+  color: rgba(255,255,255,0.4);
+  font-size: 18px;
+  cursor: pointer;
+}
+
+.remove-btn:hover {
+  color: white;
+}
+
+.back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 24px 24px 0 24px;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 50px;
+  color: white;
+  font-size: 14px;
+  padding: 8px 16px;
+  cursor: pointer;
+  transition: background 0.2s;
+  width: fit-content;
+}
+
+.back-btn:hover {
+  background: rgba(255,255,255,0.15);
+}
