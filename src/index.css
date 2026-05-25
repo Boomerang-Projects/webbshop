@@ -378,3 +378,26 @@ body {
 .logo {
   cursor: pointer;
 }
+
+.announcement-bar {
+  background: white;
+  color: black;
+  padding: 8px 0;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+@keyframes scroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.announcement-text {
+  display: inline-block;
+  animation: scroll 25s linear infinite;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 1px;
+  white-space: nowrap;
+  animation: scroll 40s linear infinite;
+}

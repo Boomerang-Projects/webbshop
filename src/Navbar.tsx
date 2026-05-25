@@ -2,30 +2,44 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 function Navbar({ cart, setSelectedCategory }) {
-  const [menuOpen, setMenuOpen] = useState(false)
-  const navigate = useNavigate()
+    const [menuOpen, setMenuOpen] = useState(false)
+    const navigate = useNavigate()
 
-  return (
-    <nav className="navbar">
-      <h2 className="logo" onClick={() => navigate('/')}>MyShop</h2>
-      
-      <div className="hamburger" onClick={() => setMenuOpen(!menuOpen)}>
-        ☰
-      </div>
+    return (
+        <>
+            <div className="announcement-bar">
+                <div className="announcement-text">
+                    {Array(6).fill(null).map((_, i) => (
+                        <span key={i}>
+                            Free Worldwide Shipping &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; • &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            New Arrivals Every Week &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; • &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            Free Returns on All Orders &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; • &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        </span>
+                    ))}
+                </div>
+            </div>
 
-     <ul className={menuOpen ? 'nav-links open' : 'nav-links'}>
-        <li onClick={() => { setSelectedCategory(''); navigate('/') }}>All</li>
-        <li onClick={() => { setSelectedCategory('beauty'); navigate('/') }}>Beauty</li>
-        <li onClick={() => { setSelectedCategory('smartphones'); navigate('/') }}>Smartphones</li>
-        <li onClick={() => { setSelectedCategory('laptops'); navigate('/') }}>Laptops</li>
-        <li onClick={() => { setSelectedCategory('furniture'); navigate('/') }}>Furniture</li>
-    </ul>   
+            <nav className="navbar">
+                <h2 className="logo" onClick={() => navigate('/')}>MyShop</h2>
 
-      <button className="cart-btn" onClick={() => navigate('/cart')}>
-        🛒 {cart.length > 0 ? cart.length : ''}
-      </button>
-    </nav>
-  )
+                <div className="hamburger" onClick={() => setMenuOpen(!menuOpen)}>
+                    ☰
+                </div>
+
+                <ul className={menuOpen ? 'nav-links open' : 'nav-links'}>
+                    <li onClick={() => { setSelectedCategory(''); navigate('/') }}>All</li>
+                    <li onClick={() => { setSelectedCategory('beauty'); navigate('/') }}>Beauty</li>
+                    <li onClick={() => { setSelectedCategory('smartphones'); navigate('/') }}>Smartphones</li>
+                    <li onClick={() => { setSelectedCategory('laptops'); navigate('/') }}>Laptops</li>
+                    <li onClick={() => { setSelectedCategory('furniture'); navigate('/') }}>Furniture</li>
+                </ul>
+
+                <button className="cart-btn" onClick={() => navigate('/cart')}>
+                    🛒 {cart.length > 0 ? cart.length : ''}
+                </button>
+            </nav>
+        </>
+    )
 }
 
 export default Navbar
