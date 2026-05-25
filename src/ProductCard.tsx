@@ -22,7 +22,7 @@ function ProductCard(props) {
           <span className="rating-number">({props.rating})</span>
         </p>
         <p className="product-price">${props.price}</p>
-        <button className="add-to-cart">Add to Cart</button>
+        <button className="add-to-cart">View</button>
       </div>
     </div>
   )

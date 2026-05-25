@@ -7,18 +7,18 @@ function Navbar({ cart, setSelectedCategory }) {
 
   return (
     <nav className="navbar">
-      <h2 className="logo">MyShop</h2>
+      <h2 className="logo" onClick={() => navigate('/')}>MyShop</h2>
       
       <div className="hamburger" onClick={() => setMenuOpen(!menuOpen)}>
         ☰
       </div>
 
      <ul className={menuOpen ? 'nav-links open' : 'nav-links'}>
-        <li onClick={() => setSelectedCategory('')}>All</li>
-        <li onClick={() => setSelectedCategory('beauty')}>Beauty</li>
-        <li onClick={() => setSelectedCategory('smartphones')}>Smartphones</li>
-        <li onClick={() => setSelectedCategory('laptops')}>Laptops</li>
-        <li onClick={() => setSelectedCategory('furniture')}>Furniture</li>
+        <li onClick={() => { setSelectedCategory(''); navigate('/') }}>All</li>
+        <li onClick={() => { setSelectedCategory('beauty'); navigate('/') }}>Beauty</li>
+        <li onClick={() => { setSelectedCategory('smartphones'); navigate('/') }}>Smartphones</li>
+        <li onClick={() => { setSelectedCategory('laptops'); navigate('/') }}>Laptops</li>
+        <li onClick={() => { setSelectedCategory('furniture'); navigate('/') }}>Furniture</li>
     </ul>   
 
       <button className="cart-btn" onClick={() => navigate('/cart')}>
