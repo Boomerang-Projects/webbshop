@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import { Search, ShoppingBag, X, ChevronDown, Sun, Moon } from 'lucide-react'
 
 const CATEGORY_GROUPS = [
@@ -27,9 +27,10 @@ function Navbar({ cartCount, search, setSearch, selectCategory, selectedCategory
   const [searchOpen, setSearchOpen] = useState(false)
   const [openGroup, setOpenGroup] = useState<string | null>(null)
   const [theme, setTheme] = useState<'dark' | 'light'>(() =>
-    (localStorage.getItem('theme') as 'dark' | 'light') || 'dark'
+    (localStorage.getItem('theme') as 'dark' | 'light') || 'light'
   )
   const navigate = useNavigate()
+  const location = useLocation()
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme)
@@ -76,7 +77,7 @@ function Navbar({ cartCount, search, setSearch, selectCategory, selectedCategory
       </div>
 
       <nav className="navbar">
-        <h2 className="logo" onClick={() => navigate('/')}>MyShop</h2>
+        <h2 className="logo" onClick={() => location.pathname === '/' ? window.scrollTo({ top: 0, behavior: 'smooth' }) : navigate('/')}>MyShop</h2>
 
         <div className="hamburger" onClick={() => { setMenuOpen(!menuOpen); setOpenGroup(null) }}>
           {menuOpen ? '✕' : '☰'}
@@ -124,17 +125,17 @@ function Navbar({ cartCount, search, setSearch, selectCategory, selectedCategory
               </li>
             )
           })}
+
+          {menuOpen && (
+            <li className="nav-menu-footer">
+              <span className="nav-menu-footer-logo">MyShop</span>
+              <span className="nav-menu-footer-copy">© {new Date().getFullYear()} · Free shipping · Free returns</span>
+            </li>
+          )}
         </ul>
 
         <div className={`nav-icons${menuOpen ? ' menu-open' : ''}`}>
-          <span
-            className="nav-icon cookie-reset-btn"
-            title="Reset cookie consent"
-            onClick={() => { localStorage.removeItem('cookieConsent'); window.location.reload() }}
-          >
-            🍪
-          </span>
-          <span className="nav-icon" onClick={toggleTheme}>
+<span className="nav-icon" onClick={toggleTheme}>
             {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
           </span>
           <span className="nav-icon" onClick={() => setSearchOpen(!searchOpen)}>
