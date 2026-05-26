@@ -16,6 +16,7 @@ function App() {
     try { return JSON.parse(localStorage.getItem('cart')) || [] } catch { return [] }
   })
   const [search, setSearch] = useState('')
+  const [debouncedSearch, setDebouncedSearch] = useState('')
   const [selectedCategory, setSelectedCategory] = useState('')
   const [loading, setLoading] = useState(true)
   const [cartToast, setCartToast] = useState(false)
@@ -57,16 +58,30 @@ function App() {
     return () => el.removeEventListener('scroll', onScroll)
   }, [])
 
+  // Debounce: wait 300ms after user stops typing before filtering products
   useEffect(() => {
-    if (!search) return
-    scrollToProducts()
+    const timer = setTimeout(() => setDebouncedSearch(search), 300)
+    return () => clearTimeout(timer)
   }, [search])
 
   useEffect(() => {
-    fetch('https://dummyjson.com/products?limit=200')
-      .then(res => res.json())
-      .then(data => { setProducts(data.products); setLoading(false) })
-      .catch(() => setLoading(false))
+    if (!debouncedSearch) return
+    scrollToProducts()
+  }, [debouncedSearch])
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const res = await fetch('https://dummyjson.com/products?limit=200')
+        const data = await res.json()
+        setProducts(data.products)
+      } catch (err) {
+        console.error('Failed to fetch products:', err)
+      } finally {
+        setLoading(false)
+      }
+    }
+    fetchProducts()
   }, [])
 
   const scrollFeatured = (dir) => {
@@ -107,7 +122,7 @@ function App() {
   const [sortBy, setSortBy] = useState('default')
 
   const filteredProducts = products.filter(product => {
-    const matchesSearch = product.title.toLowerCase().includes(search.toLowerCase())
+    const matchesSearch = product.title.toLowerCase().includes(debouncedSearch.toLowerCase())
     const matchesCategory = selectedCategory === '' || product.category === selectedCategory
     return matchesSearch && matchesCategory
   })

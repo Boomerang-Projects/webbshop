@@ -22,12 +22,20 @@ function ProductDetail({ addToCart }: { addToCart: (p: Product) => void }) {
   const [product, setProduct] = useState<Product | null>(null)
   const [selectedImage, setSelectedImage] = useState(0)
   const [added, setAdded] = useState(false)
+  const [qty, setQty] = useState(1)
 
   useEffect(() => {
-    fetch(`https://dummyjson.com/products/${id}`)
-      .then(res => res.json())
-      .then(data => { setProduct(data); setSelectedImage(0) })
-      .catch(err => console.error(err))
+    const fetchProduct = async () => {
+      try {
+        const res = await fetch(`https://dummyjson.com/products/${id}`)
+        const data = await res.json()
+        setProduct(data)
+        setSelectedImage(0)
+      } catch (err) {
+        console.error('Failed to fetch product:', err)
+      }
+    }
+    fetchProduct()
   }, [id])
 
   if (!product) return (
@@ -47,7 +55,7 @@ function ProductDetail({ addToCart }: { addToCart: (p: Product) => void }) {
   const inStock = product.stock > 0
 
   const handleAddToCart = () => {
-    addToCart(product)
+    for (let i = 0; i < qty; i++) addToCart(product)
     setAdded(true)
     setTimeout(() => setAdded(false), 2000)
   }
@@ -104,14 +112,21 @@ function ProductDetail({ addToCart }: { addToCart: (p: Product) => void }) {
             {inStock ? `✓ In Stock (${product.stock} left)` : '✕ Out of Stock'}
           </div>
 
-          <button
-            className={`detail-btn ${added ? 'added' : ''}`}
-            onClick={handleAddToCart}
-            disabled={!inStock}
-          >
-            <ShoppingCart size={18} />
-            {added ? 'Added to Cart!' : 'Add to Cart'}
-          </button>
+          <div className="detail-qty-row">
+            <div className="detail-qty">
+              <button onClick={() => setQty(q => Math.max(1, q - 1))}>−</button>
+              <span>{qty}</span>
+              <button onClick={() => setQty(q => Math.min(product.stock, q + 1))}>+</button>
+            </div>
+            <button
+              className={`detail-btn ${added ? 'added' : ''}`}
+              onClick={handleAddToCart}
+              disabled={!inStock}
+            >
+              <ShoppingCart size={18} />
+              {added ? 'Added to Cart!' : 'Add to Cart'}
+            </button>
+          </div>
 
           <div className="detail-perks">
             <div className="detail-perk"><Truck size={16} />Free shipping on orders over $50</div>

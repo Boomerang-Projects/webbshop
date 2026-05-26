@@ -127,6 +127,13 @@ function Navbar({ cartCount, search, setSearch, selectCategory, selectedCategory
         </ul>
 
         <div className={`nav-icons${menuOpen ? ' menu-open' : ''}`}>
+          <span
+            className="nav-icon cookie-reset-btn"
+            title="Reset cookie consent"
+            onClick={() => { localStorage.removeItem('cookieConsent'); window.location.reload() }}
+          >
+            🍪
+          </span>
           <span className="nav-icon" onClick={toggleTheme}>
             {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
           </span>
