@@ -6,10 +6,11 @@ import Cart from './Cart'
 import Confirmation from './Confirmation'
 import Checkout from './Checkout'
 import { useState, useEffect, useRef } from 'react'
+import { Sparkles, Smartphone, Laptop, Sofa } from 'lucide-react'
 
 function debounce(fn, delay) {
   let timer
-  return function(...args) {
+  return function (...args) {
     clearTimeout(timer)
     timer = setTimeout(() => fn(...args), delay)
   }
@@ -26,14 +27,14 @@ function App() {
   }
 
   const removeFromCart = (index) => {
-  setCart(cart.filter((_, i) => i !== index))
-}
+    setCart(cart.filter((_, i) => i !== index))
+  }
 
   const filteredProducts = products.filter(product => {
-  const matchesSearch = product.title.toLowerCase().includes(search.toLowerCase())
-  const matchesCategory = selectedCategory === '' || product.category === selectedCategory
-  return matchesSearch && matchesCategory
-})
+    const matchesSearch = product.title.toLowerCase().includes(search.toLowerCase())
+    const matchesCategory = selectedCategory === '' || product.category === selectedCategory
+    return matchesSearch && matchesCategory
+  })
 
   useEffect(() => {
     fetch('https://dummyjson.com/products?limit=200')
@@ -51,15 +52,35 @@ function App() {
         <Route path="/" element={
           <div>
             <div className="hero">
+              <p className="hero-tag">New Collection 2026</p>
               <h1 className="hero-title">Discover Something New</h1>
               <p className="hero-subtitle">Shop the latest products across all categories</p>
+              <button className="hero-btn" onClick={() => document.getElementById('products').scrollIntoView({ behavior: 'smooth' })}>
+                Shop Now
+              </button>
             </div>
-            <input
-              className="search-input"
-              placeholder="Search products..."
-              onChange={debounce((e) => setSearch(e.target.value), 350)}
-            />
-            <div className="grid">
+            <div className="categories-section">
+              <h2 className="section-title">Shop by Category</h2>
+              <div className="categories-grid">
+                <div className="category-card" onClick={() => setSelectedCategory('beauty')}>
+                  <Sparkles size={32} />
+                  <p>Beauty</p>
+                </div>
+                <div className="category-card" onClick={() => setSelectedCategory('smartphones')}>
+                  <Smartphone size={32} />
+                  <p>Smartphones</p>
+                </div>
+                <div className="category-card" onClick={() => setSelectedCategory('laptops')}>
+                  <Laptop size={32} />
+                  <p>Laptops</p>
+                </div>
+                <div className="category-card" onClick={() => setSelectedCategory('furniture')}>
+                  <Sofa size={32} />
+                  <p>Furniture</p>
+                </div>
+              </div>
+            </div>
+            <div className="grid" id="products">
               {filteredProducts.map(product => (
                 <ProductCard
                   key={product.id}

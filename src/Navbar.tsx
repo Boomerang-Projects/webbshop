@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { Search, ShoppingBag } from 'lucide-react'
 
 function Navbar({ cart, setSelectedCategory }) {
     const [menuOpen, setMenuOpen] = useState(false)
@@ -34,9 +35,15 @@ function Navbar({ cart, setSelectedCategory }) {
                     <li onClick={() => { setSelectedCategory('furniture'); navigate('/') }}>Furniture</li>
                 </ul>
 
-                <button className="cart-btn" onClick={() => navigate('/cart')}>
-                    🛒 {cart.length > 0 ? cart.length : ''}
-                </button>
+                <div className="nav-icons">
+                    <span className="nav-icon">
+                        <Search size={20} />
+                    </span>
+                    <span className="nav-icon" onClick={() => navigate('/cart')}>
+                        <ShoppingBag size={20} />
+                        {cart.length > 0 && <span className="cart-count">{cart.length}</span>}
+                    </span>
+                </div>
             </nav>
         </>
     )
