@@ -24,7 +24,7 @@ function Navbar({ cart, setSelectedCategory }) {
                 <h2 className="logo" onClick={() => navigate('/')}>MyShop</h2>
 
                 <div className="hamburger" onClick={() => setMenuOpen(!menuOpen)}>
-                    ☰
+                    {menuOpen ? '✕' : '☰'}
                 </div>
 
                 <ul className={menuOpen ? 'nav-links open' : 'nav-links'}>

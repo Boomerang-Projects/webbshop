@@ -24,6 +24,9 @@ body {
   padding: 16px 24px;
   background: #000;
   border-bottom: 1px solid rgba(255,255,255,0.1);
+  position: sticky;
+  top: 0;
+  z-index: 100;
 }
 
 .logo {
@@ -58,22 +61,33 @@ body {
 @media (max-width: 768px) {
   .hamburger {
     display: block;
+    z-index: 100;
+    position: relative;
   }
 
   .nav-links {
     display: none;
     position: absolute;
-    top: 60px;
+    top: 57px;
     left: 0;
     width: 100%;
     background: #000;
     flex-direction: column;
     padding: 24px;
     gap: 24px;
+    z-index: 99;
   }
 
   .nav-links.open {
     display: flex;
+  }
+
+  .categories-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 
@@ -230,6 +244,7 @@ body {
   max-width: 700px;
   margin: 60px auto;
   padding: 0 24px;
+  text-align: center;
 }
 
 .cart-container h1 {
