@@ -121,6 +121,8 @@ function App() {
     setCart(prev => prev.filter(item => item.id !== id))
   }
 
+  const clearCart = () => setCart([])
+
   const [sortBy, setSortBy] = useState('default')
 
   const filteredProducts = products.filter(product => {
@@ -254,7 +256,7 @@ function App() {
         } />
         <Route path="/product/:id" element={<ProductDetail addToCart={addToCart} />} />
         <Route path="/cart" element={<Cart cart={cart} incrementCart={incrementCart} removeFromCart={removeFromCart} clearFromCart={clearFromCart} />} />
-        <Route path="/checkout" element={<Checkout cart={cart} />} />
+        <Route path="/checkout" element={<Checkout cart={cart} clearCart={clearCart} />} />
         <Route path="/confirmation" element={<Confirmation />} />
       </Routes>
       <Footer />

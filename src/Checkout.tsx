@@ -10,7 +10,7 @@ interface CartItem {
   qty: number
 }
 
-function Checkout({ cart }: { cart: CartItem[] }) {
+function Checkout({ cart, clearCart }: { cart: CartItem[]; clearCart: () => void }) {
   const navigate = useNavigate()
   const [form, setForm] = useState({
     name: '', email: '', address: '', city: '', zip: '',
@@ -34,6 +34,7 @@ function Checkout({ cart }: { cart: CartItem[] }) {
       alert('Please fill in all fields')
       return
     }
+    clearCart()
     navigate('/confirmation')
   }
 
