@@ -37,6 +37,17 @@ function Navbar({ cartCount, search, setSearch, selectCategory, selectedCategory
     localStorage.setItem('theme', theme)
   }, [theme])
 
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth > 1024) {
+        setMenuOpen(false)
+        setOpenGroup(null)
+      }
+    }
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
+
   const toggleTheme = () => {
     document.documentElement.classList.add('theme-transitioning')
     setTheme(t => t === 'dark' ? 'light' : 'dark')
@@ -109,19 +120,21 @@ function Navbar({ cartCount, search, setSearch, selectCategory, selectedCategory
                   <ChevronDown size={12} className={`nav-chevron${isOpen ? ' rotated' : ''}`} />
                 </span>
 
-                {isOpen && (
-                  <ul className="nav-dropdown">
-                    {group.subs.map(sub => (
-                      <li
-                        key={sub}
-                        className={selectedCategory === sub ? 'active' : ''}
-                        onClick={() => handleSub(sub)}
-                      >
-                        {prettify(sub)}
-                      </li>
-                    ))}
-                  </ul>
-                )}
+                <ul
+                  className={`nav-dropdown${isOpen ? ' nav-dropdown--open' : ''}`}
+                  onMouseEnter={() => { if (!menuOpen) setOpenGroup(group.label) }}
+                  onMouseLeave={() => { if (!menuOpen) setOpenGroup(null) }}
+                >
+                  {group.subs.map(sub => (
+                    <li
+                      key={sub}
+                      className={selectedCategory === sub ? 'active' : ''}
+                      onClick={() => handleSub(sub)}
+                    >
+                      {prettify(sub)}
+                    </li>
+                  ))}
+                </ul>
               </li>
             )
           })}

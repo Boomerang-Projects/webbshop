@@ -1,67 +1,28 @@
-# MyShop — React Webshop
+# Webbshop
 
-A fully functional e-commerce webshop built with React, Vite, and React Router. Products are fetched from the [DummyJSON](https://dummyjson.com/) API.
+En React-baserad webbshop byggd med Vite, som hämtar produktdata från DummyJSON API.
 
-## Installation & Setup
+## Funktioner
+- Produktlista med sökning och debounce
+- Produktsidor med detaljerad information
+- Kundvagn med borttagning och totalpris
+- Kassa med orderbekräftelse
+- Responsiv navbar med kategorifiltrering
 
-```bash
-npm install
-npm run dev
-```
-
-Open [http://localhost:5173](http://localhost:5173) in your browser.
-
-## Features
-
-- Product listing with search, sort, and category filtering
-- Product detail page with image gallery and quantity selector
-- Shopping cart with quantity controls and localStorage persistence
-- Checkout form with auto-formatted card number, expiry, and CVV fields
-- Order confirmation page with estimated delivery date
-- Dark / light theme toggle
-- EU cookie consent banner
-- Hot Deals carousel (top discounted products)
-
-## Debounce Implementation
-
-The search input uses a debounce pattern to avoid filtering the product list on every single keystroke. Instead of running the filter immediately when the user types, a `setTimeout` of 300ms is set. If the user keeps typing, the previous timer is cleared via the `useEffect` cleanup function and a new one starts. Only when the user pauses for 300ms does `debouncedSearch` update and trigger the product filter.
-
-```js
-useEffect(() => {
-  const timer = setTimeout(() => setDebouncedSearch(search), 300)
-  return () => clearTimeout(timer)
-}, [search])
-```
-
-The product list filters against `debouncedSearch` instead of the raw `search` value, which reduces unnecessary renders and improves performance.
-
-## Error Handling (try...catch)
-
-All API calls inside `useEffect` use `async/await` with `try...catch` blocks to safely handle network errors:
-
-```js
-useEffect(() => {
-  const fetchProducts = async () => {
-    try {
-      const res = await fetch('https://dummyjson.com/products?limit=200')
-      const data = await res.json()
-      setProducts(data.products)
-    } catch (err) {
-      console.error('Failed to fetch products:', err)
-    } finally {
-      setLoading(false)
-    }
-  }
-  fetchProducts()
-}, [])
-```
-
-The same pattern is applied on the product detail page when fetching a single product by ID. The `finally` block ensures the loading state is always cleared whether the request succeeds or fails.
-
-## Tech Stack
-
-- React 18 (functional components, hooks)
+## Teknik
+- React
+- React Router
 - Vite
-- React Router v6
-- Lucide React (icons)
-- CSS (custom properties, dark/light theme via `data-theme` attribute)
+- DummyJSON API
+
+## Installation och start
+1. Klona repot
+2. Kör `npm install`
+3. Kör `npm run dev`
+4. Öppna `http://localhost:5173`
+
+## Debounce
+Debounce används i sökfunktionen för att undvika onödiga API-anrop vid varje tangenttryckning. Istället väntar den tills användaren slutat skriva.
+
+## Felhantering
+Try/catch används i useEffect för att fånga nätverksfel vid API-anrop.

@@ -6,7 +6,7 @@ import Cart from './Cart'
 import Confirmation from './Confirmation'
 import Checkout from './Checkout'
 import { useState, useEffect, useRef } from 'react'
-import { Sparkles, Smartphone, Laptop, Sofa, Tag } from 'lucide-react'
+import { Sparkles, Smartphone, Laptop, Sofa, Tag, ChevronDown, ChevronUp } from 'lucide-react'
 import CookieBanner from './CookieBanner'
 import Footer from './Footer'
 
@@ -20,6 +20,7 @@ function App() {
   const [selectedCategory, setSelectedCategory] = useState('')
   const [loading, setLoading] = useState(true)
   const [cartToast, setCartToast] = useState(false)
+  const [showAll, setShowAll] = useState(false)
   const navigate = useNavigate()
   const featuredScrollRef = useRef(null)
 
@@ -60,7 +61,7 @@ function App() {
 
   // Debounce: wait 300ms after user stops typing before filtering products
   useEffect(() => {
-    const timer = setTimeout(() => setDebouncedSearch(search), 300)
+    const timer = setTimeout(() => { setDebouncedSearch(search); setShowAll(false) }, 300)
     return () => clearTimeout(timer)
   }, [search])
 
@@ -90,6 +91,7 @@ function App() {
 
   const selectCategory = (cat) => {
     setSelectedCategory(cat)
+    setShowAll(false)
     setTimeout(scrollToProducts, 50)
   }
 
@@ -151,32 +153,12 @@ function App() {
         <Route path="/" element={
           <div>
             <div className="hero">
-              <p className="hero-tag">New Collection 2026</p>
-              <h1 className="hero-title">Discover Something New</h1>
-              <p className="hero-subtitle">Shop the latest products across all categories</p>
-              <button className="hero-btn" onClick={() => { setSelectedCategory(''); scrollToProducts() }}>
-                Shop Now
-              </button>
-            </div>
-            <div className="categories-section">
-              <h2 className="section-title">Shop by Category</h2>
-              <div className="categories-grid">
-                <div className={`category-card${selectedCategory === 'beauty' ? ' active' : ''}`} onClick={() => selectCategory('beauty')}>
-                  <Sparkles size={32} />
-                  <p>Beauty</p>
-                </div>
-                <div className={`category-card${selectedCategory === 'smartphones' ? ' active' : ''}`} onClick={() => selectCategory('smartphones')}>
-                  <Smartphone size={32} />
-                  <p>Smartphones</p>
-                </div>
-                <div className={`category-card${selectedCategory === 'laptops' ? ' active' : ''}`} onClick={() => selectCategory('laptops')}>
-                  <Laptop size={32} />
-                  <p>Laptops</p>
-                </div>
-                <div className={`category-card${selectedCategory === 'furniture' ? ' active' : ''}`} onClick={() => selectCategory('furniture')}>
-                  <Sofa size={32} />
-                  <p>Furniture</p>
-                </div>
+              <div className="hero-inner">
+                <p className="hero-tag">New Collection 2026</p>
+                <h1 className="hero-title">Discover<br />Something<br />New.</h1>
+                <button className="hero-btn" onClick={() => { setSelectedCategory(''); scrollToProducts() }}>
+                  Shop the latest products &rarr;
+                </button>
               </div>
             </div>
             <div className="featured-section">
@@ -200,6 +182,27 @@ function App() {
                 <button className="carousel-arrow carousel-arrow-right" onClick={() => scrollFeatured(1)}>&#8250;</button>
               </div>
             </div>
+            <div className="categories-section">
+              <h2 className="section-title">Shop by Category</h2>
+              <div className="categories-grid">
+                <div className={`category-card${selectedCategory === 'beauty' ? ' active' : ''}`} onClick={() => selectCategory('beauty')}>
+                  <Sparkles size={32} />
+                  <p>Beauty</p>
+                </div>
+                <div className={`category-card${selectedCategory === 'smartphones' ? ' active' : ''}`} onClick={() => selectCategory('smartphones')}>
+                  <Smartphone size={32} />
+                  <p>Smartphones</p>
+                </div>
+                <div className={`category-card${selectedCategory === 'laptops' ? ' active' : ''}`} onClick={() => selectCategory('laptops')}>
+                  <Laptop size={32} />
+                  <p>Laptops</p>
+                </div>
+                <div className={`category-card${selectedCategory === 'furniture' ? ' active' : ''}`} onClick={() => selectCategory('furniture')}>
+                  <Sofa size={32} />
+                  <p>Furniture</p>
+                </div>
+              </div>
+            </div>
             <div className="products-toolbar" id="products">
               <h2 className="section-title" style={{padding: 0}}>
                 Our Products{selectedCategory && <span className="category-filter-label"> — {selectedCategory}</span>}
@@ -220,7 +223,7 @@ function App() {
                   <button onClick={() => { setSelectedCategory(''); setSearch('') }}>Clear filters</button>
                 </div>
               ) : (
-                sortedProducts.map(product => (
+                (showAll ? sortedProducts : sortedProducts.slice(0, 16)).map(product => (
                   <ProductCard
                     key={product.id}
                     title={product.title}
@@ -233,6 +236,20 @@ function App() {
                 ))
               )}
             </div>
+            {!loading && sortedProducts.length > 16 && (
+              <div className="show-more-wrapper">
+                <button className="show-more-btn" onClick={() => {
+                  if (showAll) {
+                    setShowAll(false)
+                    scrollToProducts()
+                  } else {
+                    setShowAll(true)
+                  }
+                }}>
+                  {showAll ? <><ChevronUp size={16} /> Show Less</> : <>{`Show All ${sortedProducts.length} Products`} <ChevronDown size={16} /></>}
+                </button>
+              </div>
+            )}
           </div>
         } />
         <Route path="/product/:id" element={<ProductDetail addToCart={addToCart} />} />
