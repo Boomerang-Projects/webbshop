@@ -17,6 +17,7 @@ function Checkout({ cart, clearCart }: { cart: CartItem[]; clearCart: () => void
     cardNumber: '', expiry: '', cvv: ''
   })
 
+  // Formaterar kortuppgifter automatiskt: kortnummer i grupper om 4, utgångsdatum med /, CVV max 3 siffror
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     let { name, value } = e.target
     if (name === 'cardNumber')
@@ -28,6 +29,7 @@ function Checkout({ cart, clearCart }: { cart: CartItem[]; clearCart: () => void
     setForm(prev => ({ ...prev, [name]: value }))
   }
 
+  // Validerar att alla fält är ifyllda innan ordern läggs och kundvagnen töms
   const handleSubmit = () => {
     const { name, email, address, city, zip, cardNumber, expiry, cvv } = form
     if (!name || !email || !address || !city || !zip || !cardNumber || !expiry || !cvv) {

@@ -24,6 +24,7 @@ function ProductDetail({ addToCart }: { addToCart: (p: Product) => void }) {
   const [added, setAdded] = useState(false)
   const [qty, setQty] = useState(1)
 
+  // Hämtar produktdata baserat på id från URL:en; try/catch fångar nätverksfel
   useEffect(() => {
     const fetchProduct = async () => {
       try {
@@ -54,6 +55,7 @@ function ProductDetail({ addToCart }: { addToCart: (p: Product) => void }) {
   const fullStars = Math.round(product.rating)
   const inStock = product.stock > 0
 
+  // Lägger till produkten i kundvagnen det antal gånger som användaren valt
   const handleAddToCart = () => {
     for (let i = 0; i < qty; i++) addToCart(product)
     setAdded(true)

@@ -12,6 +12,7 @@ import Footer from './Footer'
 
 function App() {
   const [products, setProducts] = useState([])
+  // Hämta kundvagnen från localStorage så den överlever sidladdningar
   const [cart, setCart] = useState(() => {
     try { return JSON.parse(localStorage.getItem('cart')) || [] } catch { return [] }
   })
@@ -37,6 +38,7 @@ function App() {
     .sort((a, b) => b.discountPercentage - a.discountPercentage)
     .slice(0, 10)
 
+  // Spara kundvagnen i localStorage varje gång den uppdateras
   useEffect(() => {
     localStorage.setItem('cart', JSON.stringify(cart))
   }, [cart])
@@ -47,6 +49,7 @@ function App() {
     el.scrollLeft = el.scrollWidth / 2
   }, [featuredItems.length])
 
+  // Oändlig karusell: hoppar tillbaka/framåt när användaren scrollar förbi den duplicerade halvan
   useEffect(() => {
     const el = featuredScrollRef.current
     if (!el) return
@@ -59,7 +62,7 @@ function App() {
     return () => el.removeEventListener('scroll', onScroll)
   }, [])
 
-  // Debounce: wait 300ms after user stops typing before filtering products
+  // Debounce: väntar 300ms efter att användaren slutat skriva innan sökningen körs
   useEffect(() => {
     const timer = setTimeout(() => { setDebouncedSearch(search); setShowAll(false) }, 300)
     return () => clearTimeout(timer)
@@ -70,6 +73,7 @@ function App() {
     scrollToProducts()
   }, [debouncedSearch])
 
+  // Hämtar alla produkter vid sidstart; try/catch fångar eventuella nätverksfel
   useEffect(() => {
     const fetchProducts = async () => {
       try {
@@ -95,6 +99,7 @@ function App() {
     setTimeout(scrollToProducts, 50)
   }
 
+  // Om produkten redan finns i kundvagnen ökas antalet, annars läggs den till som ny rad
   const addToCart = (product) => {
     setCart(prev => {
       const existing = prev.find(item => item.id === product.id)
