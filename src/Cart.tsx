@@ -1,22 +1,9 @@
 import { useNavigate } from 'react-router-dom'
 import { ShoppingBag, Smartphone, Sparkles, Laptop, Sofa } from 'lucide-react'
+import { useShop } from './ShopContext'
 
-interface CartItem {
-  id: number
-  title: string
-  price: number
-  thumbnail: string
-  qty: number
-}
-
-interface CartProps {
-  cart: CartItem[]
-  incrementCart: (id: number) => void
-  removeFromCart: (id: number) => void
-  clearFromCart: (id: number) => void
-}
-
-function Cart({ cart, incrementCart, removeFromCart, clearFromCart }: CartProps) {
+function Cart() {
+  const { cart, incrementCart, removeFromCart, clearFromCart } = useShop()
   const navigate = useNavigate()
   const total = cart.reduce((sum, item) => sum + item.price * item.qty, 0)
 

@@ -1,16 +1,10 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Lock } from 'lucide-react'
+import { useShop } from './ShopContext'
 
-interface CartItem {
-  id: number
-  title: string
-  price: number
-  thumbnail: string
-  qty: number
-}
-
-function Checkout({ cart, clearCart }: { cart: CartItem[]; clearCart: () => void }) {
+function Checkout() {
+  const { cart, clearCart } = useShop()
   const navigate = useNavigate()
   const [form, setForm] = useState({
     name: '', email: '', address: '', city: '', zip: '',

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { ArrowLeft, ShoppingCart, Shield, Truck, RotateCcw } from 'lucide-react'
+import { useShop } from './ShopContext'
 
 interface Product {
   id: number
@@ -16,7 +17,8 @@ interface Product {
   images: string[]
 }
 
-function ProductDetail({ addToCart }: { addToCart: (p: Product) => void }) {
+function ProductDetail() {
+  const { addToCart } = useShop()
   const { id } = useParams()
   const navigate = useNavigate()
   const [product, setProduct] = useState<Product | null>(null)

@@ -5,130 +5,41 @@ import ProductDetail from './ProductDetail'
 import Cart from './Cart'
 import Confirmation from './Confirmation'
 import Checkout from './Checkout'
-import { useState, useEffect, useRef } from 'react'
 import { Sparkles, Smartphone, Laptop, Sofa, Tag, ChevronDown, ChevronUp } from 'lucide-react'
 import CookieBanner from './CookieBanner'
 import Footer from './Footer'
+import { ShopProvider, useShop } from './ShopContext'
 
-function App() {
-  const [products, setProducts] = useState([])
-  // Hämta kundvagnen från localStorage så den överlever sidladdningar
-  const [cart, setCart] = useState(() => {
-    try { return JSON.parse(localStorage.getItem('cart')) || [] } catch { return [] }
-  })
-  const [search, setSearch] = useState('')
-  const [debouncedSearch, setDebouncedSearch] = useState('')
-  const [selectedCategory, setSelectedCategory] = useState('')
-  const [loading, setLoading] = useState(true)
-  const [cartToast, setCartToast] = useState(false)
-  const [showAll, setShowAll] = useState(false)
+// Själva sidinnehållet – läser allt från context via useShop()
+function ShopContent() {
+  const {
+    products,
+    cartToast,
+    debouncedSearch,
+    selectedCategory,
+    selectCategory,
+    setSelectedCategory,
+    loading,
+    sortBy,
+    setSortBy,
+    showAll,
+    setShowAll,
+    featuredScrollRef,
+    scrollToProducts,
+    addToCart,
+    setSearch,
+  } = useShop()
+
   const navigate = useNavigate()
-  const featuredScrollRef = useRef(null)
-
-  const scrollToProducts = () => {
-    const el = document.getElementById('products')
-    const navbar = document.querySelector('.navbar-wrapper')
-    if (!el) return
-    const offset = (navbar?.offsetHeight ?? 0) + 12
-    window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - offset, behavior: 'smooth' })
-  }
 
   const featuredItems = products
     .filter(p => p.discountPercentage > 5)
     .sort((a, b) => b.discountPercentage - a.discountPercentage)
     .slice(0, 10)
 
-  // Spara kundvagnen i localStorage varje gång den uppdateras
-  useEffect(() => {
-    localStorage.setItem('cart', JSON.stringify(cart))
-  }, [cart])
-
-  useEffect(() => {
-    const el = featuredScrollRef.current
-    if (!el || featuredItems.length === 0) return
-    el.scrollLeft = el.scrollWidth / 2
-  }, [featuredItems.length])
-
-  // Oändlig karusell: hoppar tillbaka/framåt när användaren scrollar förbi den duplicerade halvan
-  useEffect(() => {
-    const el = featuredScrollRef.current
-    if (!el) return
-    const onScroll = () => {
-      const half = el.scrollWidth / 2
-      if (el.scrollLeft >= half * 1.5) el.scrollLeft -= half
-      else if (el.scrollLeft <= half * 0.5) el.scrollLeft += half
-    }
-    el.addEventListener('scroll', onScroll)
-    return () => el.removeEventListener('scroll', onScroll)
-  }, [])
-
-  // Debounce: väntar 300ms efter att användaren slutat skriva innan sökningen körs
-  useEffect(() => {
-    const timer = setTimeout(() => { setDebouncedSearch(search); setShowAll(false) }, 300)
-    return () => clearTimeout(timer)
-  }, [search])
-
-  useEffect(() => {
-    if (!debouncedSearch) return
-    scrollToProducts()
-  }, [debouncedSearch])
-
-  // Hämtar alla produkter vid sidstart; try/catch fångar eventuella nätverksfel
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const res = await fetch('https://dummyjson.com/products?limit=200')
-        const data = await res.json()
-        setProducts(data.products)
-      } catch (err) {
-        console.error('Failed to fetch products:', err)
-      } finally {
-        setLoading(false)
-      }
-    }
-    fetchProducts()
-  }, [])
-
   const scrollFeatured = (dir) => {
     featuredScrollRef.current?.scrollBy({ left: dir * 212, behavior: 'smooth' })
   }
-
-  const selectCategory = (cat) => {
-    setSelectedCategory(cat)
-    setShowAll(false)
-    setTimeout(scrollToProducts, 50)
-  }
-
-  // Om produkten redan finns i kundvagnen ökas antalet, annars läggs den till som ny rad
-  const addToCart = (product) => {
-    setCart(prev => {
-      const existing = prev.find(item => item.id === product.id)
-      if (existing) return prev.map(item => item.id === product.id ? { ...item, qty: item.qty + 1 } : item)
-      return [...prev, { ...product, qty: 1 }]
-    })
-    setCartToast(true)
-    setTimeout(() => setCartToast(false), 2000)
-  }
-
-  const incrementCart = (id) => {
-    setCart(prev => prev.map(item => item.id === id ? { ...item, qty: item.qty + 1 } : item))
-  }
-
-  const removeFromCart = (id) => {
-    setCart(prev => {
-      const existing = prev.find(item => item.id === id)
-      if (existing?.qty > 1) return prev.map(item => item.id === id ? { ...item, qty: item.qty - 1 } : item)
-      return prev.filter(item => item.id !== id)
-    })
-  }
-
-  const clearFromCart = (id) => {
-    setCart(prev => prev.filter(item => item.id !== id))
-  }
-
-  const clearCart = () => setCart([])
-
-  const [sortBy, setSortBy] = useState('default')
 
   const filteredProducts = products.filter(product => {
     const matchesSearch = product.title.toLowerCase().includes(debouncedSearch.toLowerCase())
@@ -143,19 +54,11 @@ function App() {
     return 0
   })
 
-  const cartCount = cart.reduce((sum, item) => sum + item.qty, 0)
-
   return (
     <div>
       <CookieBanner />
       {cartToast && <div className="cart-toast">Added to cart!</div>}
-      <Navbar
-        cartCount={cartCount}
-        search={search}
-        setSearch={setSearch}
-        selectCategory={selectCategory}
-        selectedCategory={selectedCategory}
-      />
+      <Navbar />
       <Routes>
         <Route path="/" element={
           <div>
@@ -259,13 +162,22 @@ function App() {
             )}
           </div>
         } />
-        <Route path="/product/:id" element={<ProductDetail addToCart={addToCart} />} />
-        <Route path="/cart" element={<Cart cart={cart} incrementCart={incrementCart} removeFromCart={removeFromCart} clearFromCart={clearFromCart} />} />
-        <Route path="/checkout" element={<Checkout cart={cart} clearCart={clearCart} />} />
+        <Route path="/product/:id" element={<ProductDetail />} />
+        <Route path="/cart" element={<Cart />} />
+        <Route path="/checkout" element={<Checkout />} />
         <Route path="/confirmation" element={<Confirmation />} />
       </Routes>
       <Footer />
     </div>
+  )
+}
+
+// ShopProvider wrappar hela appen så att context finns tillgängligt överallt
+function App() {
+  return (
+    <ShopProvider>
+      <ShopContent />
+    </ShopProvider>
   )
 }
 

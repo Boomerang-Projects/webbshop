@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { Search, ShoppingBag, X, ChevronDown, Sun, Moon } from 'lucide-react'
+import { useShop } from './ShopContext'
 
 const CATEGORY_GROUPS = [
   { label: 'Tech',           subs: ['smartphones', 'laptops', 'tablets', 'mobile-accessories'] },
@@ -14,15 +15,8 @@ const CATEGORY_GROUPS = [
 const prettify = (slug: string) =>
   slug.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')
 
-interface NavbarProps {
-  cartCount: number
-  search: string
-  setSearch: (val: string) => void
-  selectCategory: (cat: string) => void
-  selectedCategory: string
-}
-
-function Navbar({ cartCount, search, setSearch, selectCategory, selectedCategory }: NavbarProps) {
+function Navbar() {
+  const { cartCount, search, setSearch, selectCategory, selectedCategory } = useShop()
   const [menuOpen, setMenuOpen] = useState(false)
   const [searchOpen, setSearchOpen] = useState(false)
   const [openGroup, setOpenGroup] = useState<string | null>(null)
